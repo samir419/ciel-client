@@ -7,6 +7,7 @@ function User(){
     const [image_path,setimage_path] = useState('');
     const [userposts, setuserposts] = useState([]);
      const [userdata, setuserdata] = useState({followers:0,following:0,date_joined:0 });
+    const [products,setproducts] = useState([])
     const {id} = useParams()
       useEffect(() => {
             fetch(`http://localhost:5000/user/${id}`)
@@ -28,6 +29,16 @@ function User(){
             console.log(data); 
             setuserposts(data)
             console.log(userposts)
+            })
+            .catch(error => {
+            console.error('Error fetching data:', error);
+            });
+
+            fetch(`http://localhost:5000/products/${id}`)
+            .then(response => response.json())  
+            .then(data => {
+            console.log(data); 
+            setproducts(data)
             })
             .catch(error => {
             console.error('Error fetching data:', error);
@@ -69,19 +80,19 @@ function User(){
         }
     return(
         <>
-            <div>
+            <div className='page'>
                 <h1>{username} profile</h1>
-                <img src={image_path} width="100px" height="100px"/>
+                <img src={image_path} width="100px" height="100px" style={{borderRadius:'50%'}}/>
                 <p>name:{username}</p>
                 <p>bio:{bio}</p>
                 <p>followers:{userdata.followers} following:{userdata.following} {userdata.date_joined}</p>
                 <button onClick={()=>follow({id})}>follow</button>
                 <button onClick={()=>start_chat()}>chat</button>
-                <div>
-                    <h2>posts</h2>
-                        {userposts.map((post) => (
+                <h2>posts</h2>
+                <div className='container'>
+                    {userposts.map((post) => (
                             <div key={post._id} className="post">
-                                <h3>{post.title}</h3>
+                                <h3 onClick={()=>navigate(`/post/${post._id}`)}>{post.title}</h3>
                                 <p>{post.description}</p>
                                 {post.content && (
                                     <div>
@@ -107,6 +118,7 @@ function User(){
                                 )}
                             </div>
                         ))}
+                       
                 </div>
             </div>
         </>

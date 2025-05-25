@@ -3,7 +3,7 @@ import { Outlet, Link } from "react-router-dom";
 function Ciel_posts(){
      const [posts, setposts] = useState([]);
     const [commentInput, setCommentInput] = useState("");
-    const [refresh,setrefresh]= useState(false);
+    const [searchquery,setsearchquery] = useState('');
 
     useEffect(() => {
              fetch(`http://localhost:5000/posts`)
@@ -15,50 +15,32 @@ function Ciel_posts(){
              .catch(error => {
              console.error('Error fetching data:', error);
              });
-         },[refresh]);
-        const handleLike = (postId) => {
-            fetch(`http://localhost:5000/like/${postId}`,{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({user:localStorage.getItem('user_id')})
-                })
-            .then(response => response.json())  
-            .then(data => {
-            console.log(data); 
+         },[]);
+
+    const search = () =>{
+        fetch(`http://localhost:5000/search_posts`,{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({query:searchquery})
             })
-            .catch(error => {
-            console.error('Error fetching data:', error);
-            });
-            setrefresh(prev=>!prev)
-        };
-    
-        const handleAddComment = (postId, commentText) => {
-            fetch(`http://localhost:5000/comment/${postId}`,{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({user:localStorage.getItem('user_id'),message:commentInput})
-                })
-            .then(response => response.json())  
-            .then(data => {
-            console.log(data); 
-            })
-            .catch(error => {
-            console.error('Error fetching data:', error);
-            });
-            setrefresh(prev=>!prev)
-        };
+        .then(response => response.json())  
+        .then(data => {
+        console.log(data); 
+        setposts(data)
+        })
+        .catch(error => {
+        console.error('Error fetching data:', error);
+        });
+    }
     return(
         <div className='container'>
+            <input type="search" onSubmit={search()} onChange={(e)=>setsearchquery(e.target.value)} style={{display:'none'}}/>
             {posts.map((post) => (
                 <div key={post._id} className="post">
-                    <h3>{post.title}</h3>
-                    <p>{post.description}</p>
-                    <p>{post.type}</p>
-                    <Link to={`/user/${post.author._id}`}>{post.author.name}</Link>
+                    <h3><Link to={`/post/${post._id}`} style={{color:'white'}}>{post.title}</Link></h3>
+                    <p>type:{post.type}</p>
                     {post.content && (
                         <div>
                             {post.type == 'video' ? (
@@ -91,26 +73,6 @@ function Ciel_posts(){
                         </div>
                     )}
                     <p>Likes: {post.likes.length}</p>
-                    <button onClick={() => handleLike(post._id)}>Like</button>
-                    <p>Comments: {post.comments.length}</p>
-                    <ul>
-                        {post.comments.map((comment, index) => (
-                            <li key={index}>{comment.author.name}:{comment.content}</li>
-                        ))}
-                    </ul>
-
-                    <input
-                        type="text"
-                        placeholder="Add a comment"
-                        className="comment-input"
-                        onChange={(e) => setCommentInput(e.target.value)}
-                    />
-                    <button
-                        onClick={() => handleAddComment(post._id, commentInput)}
-                        className="comment-button"
-                    >
-                        Add Comment
-                    </button>
                 </div>
             ))}
         </div>

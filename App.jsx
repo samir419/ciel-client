@@ -8,6 +8,15 @@ import Ciel_posts from "./posts";
 import User from "./user";
 import Chat from "./chat";
 import Join_chat from "./joinchat"
+import Forums from "./forums";
+import Forum from "./forum";
+import Myforum from "./myforum";
+import Topic from "./topic"
+import Post from "./post";
+import Product from "./product";
+import Products from "./products";
+
+
 function App() {
   return (
    <>
@@ -24,6 +33,14 @@ function App() {
         <Route path="/user/:id" element={<User />} />
         <Route path="/chat/:id" element={<Chat />} />
         <Route path="/join_chat/:id" element={<Join_chat />} />
+        <Route path="/forums" element={<Forums />} />
+        <Route path="/forum/:id" element={<Forum />} />
+        <Route path="/myforum/:id" element={<Myforum />} />
+        <Route path="/topic/:id" element={<Topic />} />
+        <Route path="/post/:id" element={<Post />} />
+        <Route path="/product/:id" element={<Product />} />
+        <Route path="/products" element={<Products />} />
+
       
       </Routes>
     </BrowserRouter>
