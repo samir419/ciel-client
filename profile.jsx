@@ -2,6 +2,7 @@ import React, { useState,useEffect  } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
 function Ciel_profile(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [bio, setbio] = useState('');
@@ -19,24 +20,25 @@ function Ciel_profile(){
     const [product_display,setproductdisplay]=useState('none')
 
 
-    const api = `http://localhost:5000/update_user/${localStorage.getItem('user_id')}`
-    const post_api = `http://localhost:5000/create_post/${localStorage.getItem('user_id')}`
-    const product_api =  `http://localhost:5000/create_product/${localStorage.getItem('user_id')}`
+    const api = `${apiUrl}/update_user/${localStorage.getItem('user_id')}`
+    const post_api = `${apiUrl}/create_post/${localStorage.getItem('user_id')}`
+    const product_api =  `${apiUrl}/create_product/${localStorage.getItem('user_id')}`
+
 
      useEffect(() => {
-        fetch(`http://localhost:5000/user/${localStorage.getItem('user_id')}`)
+        fetch(`${apiUrl}/user/${localStorage.getItem('user_id')}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
         setUsername(data.name)
         setbio(data.bio)
-        setimage_path(`http://localhost:5000/files/${data.profile_pic}`)
+        setimage_path(`${apiUrl}/files/${data.profile_pic}`)
         })
         .catch(error => {
         console.error('Error fetching data:', error);
         });
 
-        fetch(`http://localhost:5000/posts/${localStorage.getItem('user_id')}`)
+        fetch(`${apiUrl}/posts/${localStorage.getItem('user_id')}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
@@ -47,7 +49,7 @@ function Ciel_profile(){
         console.error('Error fetching data:', error);
         });
 
-        fetch(`http://localhost:5000/chats/${localStorage.getItem('user_id')}`)
+        fetch(`${apiUrl}/chats/${localStorage.getItem('user_id')}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
@@ -57,7 +59,7 @@ function Ciel_profile(){
         console.error('Error fetching data:', error);
         });
 
-        fetch(`http://localhost:5000/myforums/${localStorage.getItem('user_id')}`)
+        fetch(`${apiUrl}/myforums/${localStorage.getItem('user_id')}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
@@ -67,7 +69,7 @@ function Ciel_profile(){
         console.error('Error fetching data:', error);
         });
 
-        fetch(`http://localhost:5000/products/${localStorage.getItem('user_id')}`)
+        fetch(`${apiUrl}/products/${localStorage.getItem('user_id')}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
@@ -79,7 +81,7 @@ function Ciel_profile(){
     },[]);
 
     const handledelete = (postId) => {
-        fetch(`http://localhost:5000/delete/${postId}`,{
+        fetch(`${apiUrl}/delete/${postId}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -96,7 +98,7 @@ function Ciel_profile(){
         //setrefresh(prev => !prev)
     };
     const createforum = () => {
-        fetch(`http://localhost:5000/createforum`,{
+        fetch(`${apiUrl}/createforum`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -178,7 +180,7 @@ function Ciel_profile(){
                                                     <video width="auto" height="240" controls>
                                                         <source
                                                             src={
-                                                        `http://localhost:5000/files/${post.content}`
+                                                        `${apiUrl}/files/${post.content}`
                                                             }
                                                             type="video/mp4"
                                                         />
@@ -187,14 +189,14 @@ function Ciel_profile(){
                                                 ) : post.type == 'image' ? (
                                                     <img width="auto" height="240"
                                                         src={
-                                                        `http://localhost:5000/files/${post.content}`
+                                                        `${apiUrl}/files/${post.content}`
                                                         }
                                                         alt="Post Media"
                                                     />
                                                 ): post.type == 'audio' ? (
                                                     <audio controls
                                                         src={
-                                                        `http://localhost:5000/files/${post.content}`
+                                                        `${apiUrl}/files/${post.content}`
                                                         }
                                                         alt="Post Media"
                                                     />
@@ -227,7 +229,7 @@ function Ciel_profile(){
                             <div key={product._id} className="post">
                                 <h3>{product.name}</h3>
                                 <p>{product.description}</p>
-                                <img width="auto" height="240" src={`http://localhost:5000/files/${product.picture}`}alt="Product picture"/>
+                                <img width="auto" height="240" src={`${apiUrl}/files/${product.picture}`}alt="Product picture"/>
                                 <p>price: ${product.price}  amount:{product.quantity}</p>
                             </div>
                         ))}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 function User(){
+    const apiUrl = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [bio, setbio] = useState('');
@@ -10,20 +11,20 @@ function User(){
     const [products,setproducts] = useState([])
     const {id} = useParams()
       useEffect(() => {
-            fetch(`http://localhost:5000/user/${id}`)
+            fetch(`${apiUrl}/user/${id}`)
             .then(response => response.json())  
             .then(data => {
             console.log(data); 
             setUsername(data.name)
             setbio(data.bio)
-            setimage_path(`http://localhost:5000/files/${data.profile_pic}`)
+            setimage_path(`${apiUrl}/files/${data.profile_pic}`)
             setuserdata({ followers: data.followers.length, following: data.following.length, date_joined: data.createdAt });
             })
             .catch(error => {
             console.error('Error fetching data:', error);
             });
     
-            fetch(`http://localhost:5000/posts/${id}`)
+            fetch(`${apiUrl}/posts/${id}`)
             .then(response => response.json())  
             .then(data => {
             console.log(data); 
@@ -34,7 +35,7 @@ function User(){
             console.error('Error fetching data:', error);
             });
 
-            fetch(`http://localhost:5000/products/${id}`)
+            fetch(`${apiUrl}/products/${id}`)
             .then(response => response.json())  
             .then(data => {
             console.log(data); 
@@ -45,7 +46,7 @@ function User(){
             });
         },[]);
         const follow = (id) => {
-            fetch(`http://localhost:5000/followuser/${id}`,{
+            fetch(`${apiUrl}/followuser/${id}`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -62,7 +63,7 @@ function User(){
             });
         };
         const start_chat = () =>{
-            fetch(`http://localhost:5000/newchat`,{
+            fetch(`${apiUrl}/newchat`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -100,7 +101,7 @@ function User(){
                                             <video width="320" height="240" controls>
                                                 <source
                                                     src={
-                                                `http://localhost:5000/files/${post.content}`
+                                                `${apiUrl}/files/${post.content}`
                                                     }
                                                     type="video/mp4"
                                                 />
@@ -109,7 +110,7 @@ function User(){
                                         ) : (
                                             <img width="320" height="240"
                                                 src={
-                                                `http://localhost:5000/files/${post.content}`
+                                                `${apiUrl}/files/${post.content}`
                                                 }
                                                 alt="Post Media"
                                             />

@@ -1,12 +1,13 @@
 import { useState,useEffect } from "react";
 import { useNavigate,useParams } from "react-router-dom";
 function Myforum(){
+    const apiUrl = import.meta.env.VITE_API_URL;
     const {id} = useParams()
      const navigate = useNavigate();
     const [topics,settopics] = useState([]);
     const [topicname,settopicname] = useState('')
      useEffect(() => {
-            fetch(`http://localhost:5000/forum/${id}`)
+            fetch(`${apiUrl}/forum/${id}`)
             .then(response => response.json())  
             .then(data => {
             console.log(data); 
@@ -18,7 +19,7 @@ function Myforum(){
         },[]);
         const addtopic = () =>{
             console.log("Sending:", { topic_name: topicname, forum: id });
-            fetch(`http://localhost:5000/createtopic`,{
+            fetch(`${apiUrl}/createtopic`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

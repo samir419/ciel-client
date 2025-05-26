@@ -1,6 +1,7 @@
 import React, { useState,useEffect  } from 'react';
 import { useNavigate,useParams,Link } from "react-router-dom";
 function Post(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const {id} = useParams();
      const [post, setpost] = useState({
         title: "",
@@ -15,7 +16,7 @@ function Post(){
      const [refresh,setrefresh]= useState(false);
     useEffect(() => {
         console.log('sending request')
-        fetch(`http://localhost:5000/post/${id}`)
+        fetch(`${apiUrl}/post/${id}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
@@ -27,7 +28,7 @@ function Post(){
         console.log(post)
     },[refresh]);
     const handleLike = () => {
-        fetch(`http://localhost:5000/like/${id}`,{
+        fetch(`${apiUrl}/like/${id}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -45,7 +46,7 @@ function Post(){
     };
 
     const handleAddComment = () => {
-        fetch(`http://localhost:5000/comment/${id}`,{
+        fetch(`${apiUrl}/comment/${id}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -74,7 +75,7 @@ function Post(){
                             <video style={{maxWidth:'1000px',height:'auto'}} controls>
                                 <source
                                     src={
-                                `http://localhost:5000/files/${post.content}`
+                                `${apiUrl}/files/${post.content}`
                                     }
                                     type="video/mp4"
                                 />
@@ -83,14 +84,14 @@ function Post(){
                         ) : post.type == 'image' ? (
                             <img style={{maxWidth:'1000px',height:'auto'}}
                                 src={
-                                `http://localhost:5000/files/${post.content}`
+                                `${apiUrl}/files/${post.content}`
                                 }
                                 alt="Post Media"
                             />
                         ): post.type == 'audio' ? (
                             <audio controls
                                 src={
-                                `http://localhost:5000/files/${post.content}`
+                                `${apiUrl}/files/${post.content}`
                                 }
                                 alt="Post Media"
                             />

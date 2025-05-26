@@ -1,6 +1,7 @@
 import React, { useState,useEffect  } from 'react';
 import { useNavigate,useParams,Link } from "react-router-dom";
 function Product(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const {id} = useParams();
      const [product, setproduct] = useState({
         name: "",
@@ -15,7 +16,7 @@ function Product(){
      const [refresh,setrefresh]= useState(false);
     useEffect(() => {
         console.log('sending request')
-        fetch(`http://localhost:5000/product/${id}`)
+        fetch(`${apiUrl}/product/${id}`)
         .then(response => response.json())  
         .then(data => {
         console.log(data); 
@@ -28,7 +29,7 @@ function Product(){
     },[refresh]);
 
     const handleAddComment = () => {
-        fetch(`http://localhost:5000/comment_product/${id}`,{
+        fetch(`${apiUrl}/comment_product/${id}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -50,7 +51,7 @@ function Product(){
                 <h3>{product.name}</h3>
                 <p>{product.description}</p>
                 <Link to={`/user/${product.seller._id}`}>{product.seller.name}</Link>
-                <img width="auto" height="240" src={`http://localhost:5000/files/${product.picture}`}alt="Product picture"/>
+                <img width="auto" height="240" src={`${apiUrl}/files/${product.picture}`}alt="Product picture"/>
                 <p>price: ${product.price} quantity:{product.quantity}</p>
                 <p>Comments: {product.comments.length}</p>
                 <ul>

@@ -4,6 +4,7 @@ import { Outlet, Link } from "react-router-dom";
 
 
 function Cindex(){
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     //const [setUser] = useState(''); 
@@ -11,7 +12,7 @@ function Cindex(){
 
     const handleSignup = async () => {
         try {
-            fetch(`http://localhost:5000/signup`,{
+            fetch(`${apiUrl}/signup`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -33,7 +34,7 @@ function Cindex(){
     };
     const handleLogin = async () => {
         try {
-            fetch(`http://localhost:5000/login`,{
+            fetch(`${apiUrl}/login`,{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

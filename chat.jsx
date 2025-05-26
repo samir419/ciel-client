@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 function Chat(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const {id} = useParams()
      const [messages,setmessages] = useState([])
      const [message,setmessage] = useState('')
       useEffect(() => {
-                 fetch(`http://localhost:5000/chat/${id}`)
+                 fetch(`${apiUrl}/chat/${id}`)
                  .then(response => response.json())  
                  .then(data => {
                  console.log(data); 
@@ -16,7 +17,7 @@ function Chat(){
                  });
              },[]);
     const new_message = () =>{
-        fetch(`http://localhost:5000/chat-message/${id}`,{
+        fetch(`${apiUrl}/chat-message/${id}`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

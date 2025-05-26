@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 function Join_chat(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const {id} = useParams()
     const navigate = useNavigate();
       useEffect(() => {
-                 fetch(`http://localhost:5000/join_chat/${id}`,{
+                 fetch(`${apiUrl}/join_chat/${id}`,{
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

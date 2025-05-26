@@ -1,12 +1,13 @@
 import React, { useState,useEffect  } from 'react';
 import { Outlet, Link } from "react-router-dom";
 function Ciel_posts(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const [posts, setposts] = useState([]);
     const [commentInput, setCommentInput] = useState("");
     const [searchquery,setsearchquery] = useState('');
 
     useEffect(() => {
-             fetch(`http://localhost:5000/posts`)
+             fetch(`${apiUrl}/posts`)
              .then(response => response.json())  
              .then(data => {
              console.log(data); 
@@ -18,7 +19,7 @@ function Ciel_posts(){
          },[]);
 
     const search = () =>{
-        fetch(`http://localhost:5000/search_posts`,{
+        fetch(`${apiUrl}/search_posts`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -47,7 +48,7 @@ function Ciel_posts(){
                                 <video width="auto" height="240" controls>
                                     <source
                                         src={
-                                    `http://localhost:5000/files/${post.content}`
+                                    `${apiUrl}/files/${post.content}`
                                         }
                                         type="video/mp4"
                                     />
@@ -56,14 +57,14 @@ function Ciel_posts(){
                             ) : post.type == 'image' ? (
                                 <img width="auto" height="240"
                                     src={
-                                    `http://localhost:5000/files/${post.content}`
+                                    `${apiUrl}/files/${post.content}`
                                     }
                                     alt="Post Media"
                                 />
                             ): post.type == 'audio' ? (
                                 <audio controls
                                     src={
-                                    `http://localhost:5000/files/${post.content}`
+                                    `${apiUrl}/files/${post.content}`
                                     }
                                     alt="Post Media"
                                 />

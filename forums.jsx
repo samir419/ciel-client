@@ -1,10 +1,11 @@
 import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 function Forums(){
+    const apiUrl = import.meta.env.VITE_API_URL;
      const navigate = useNavigate();
     const [forums,setforums] = useState([])
      useEffect(() => {
-            fetch(`http://localhost:5000/forumlist`)
+            fetch(`${apiUrl}/forumlist`)
             .then(response => response.json())  
             .then(data => {
             console.log(data); 
