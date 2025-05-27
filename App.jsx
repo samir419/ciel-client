@@ -1,5 +1,5 @@
 
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {HashRouter, Routes, Route} from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
 import Cindex from "./register";
 import Chome from "./home";
@@ -23,7 +23,7 @@ function App() {
      <div>
     
      </div>
-     <BrowserRouter>
+     <HashRouter>
       <Routes>
         <Route index element={<Chome />} />
         <Route path="/cindex" element={<Cindex />} />
@@ -43,7 +43,7 @@ function App() {
 
       
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
    </>
   );
 }
