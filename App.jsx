@@ -25,7 +25,7 @@ function App() {
      </div>
      <HashRouter>
       <Routes>
-        <Route index element={<Chome />} />
+        <Route index element={<Cindex />} />
         <Route path="/cindex" element={<Cindex />} />
         <Route path="/chome" element={<Chome />} />
         <Route path="profile" element={<Ciel_profile />} />
