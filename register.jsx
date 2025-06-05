@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Outlet, Link } from "react-router-dom";
+import LandingPage from './landingpage';
 
 
 function Cindex(){
@@ -56,6 +57,7 @@ function Cindex(){
     };
     return(
         <>
+         <LandingPage />
             <div>
                 <h1>log in</h1>
                 <input
