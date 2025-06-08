@@ -15,7 +15,7 @@ import Topic from "./topic"
 import Post from "./post";
 import Product from "./product";
 import Products from "./products";
-import Test from "./test";
+
 
 
 function App() {
@@ -41,7 +41,7 @@ function App() {
         <Route path="/post/:id" element={<Post />} />
         <Route path="/product/:id" element={<Product />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/test" element={<Test />} />
+      
 
       
       </Routes>
