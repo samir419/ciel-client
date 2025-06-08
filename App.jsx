@@ -15,6 +15,7 @@ import Topic from "./topic"
 import Post from "./post";
 import Product from "./product";
 import Products from "./products";
+import Test from "./test";
 
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
      </div>
      <HashRouter>
       <Routes>
-        <Route index element={<Cindex />} />
+        <Route index element={<Chome />} />
         <Route path="/cindex" element={<Cindex />} />
         <Route path="/chome" element={<Chome />} />
         <Route path="profile" element={<Ciel_profile />} />
@@ -40,6 +41,7 @@ function App() {
         <Route path="/post/:id" element={<Post />} />
         <Route path="/product/:id" element={<Product />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/test" element={<Test />} />
 
       
       </Routes>

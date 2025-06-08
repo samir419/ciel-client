@@ -16,18 +16,20 @@ function Products(){
              });
          },[]);
     return(
-        <div className='page'>
-            <h1>market place</h1>
-            <div className='container'>
-                {products.map((product) => (
-                    <div key={product._id} className="post">
-                        <h3><Link to={`/product/${product._id}`}><h1>{product.name}</h1></Link></h3>
-                        <p>{product.description}</p>
-                        <img width="auto" height="240" src={`${apiUrl}/files/${product.picture}`}alt="Product picture"/>
-                        <p>${product.price}</p>
-                    </div>
-                ))}
-            </div>
+        <div className="social-home">
+             <h1 className="header">market place</h1>
+             <div className="post-grid">
+               {products.map((product) => (
+                 <div className="post-card" key={product.id}>
+                   <h2 className="post-title"><Link to={`/product/${product._id}`}>{product.name}</Link></h2>
+                   <p style={{display:'inline'}}>{product.description}</p>
+                   <div className="media-container">
+                     <img width="auto" height="240px" src={`${apiUrl}/files/${product.picture}`}alt="post picture" style={{maxHeight:'240px',width:'auto'}}/>
+                   </div>
+                   <div className="like-count">${product.price} quantity: {product.quantity}</div>
+                 </div>
+               ))}
+             </div>
         </div>
        
     )

@@ -9,6 +9,10 @@ function User(){
     const [userposts, setuserposts] = useState([]);
      const [userdata, setuserdata] = useState({followers:0,following:0,date_joined:0 });
     const [products,setproducts] = useState([])
+     const [refresh,setrefresh] = useState(false);
+    const [forums,setforums] = useState([]);
+      const [activeTab, setActiveTab] = useState('posts');
+    
     const {id} = useParams()
       useEffect(() => {
             fetch(`${apiUrl}/user/${id}`)
@@ -44,6 +48,16 @@ function User(){
             .catch(error => {
             console.error('Error fetching data:', error);
             });
+
+            fetch(`${apiUrl}/myforums/${id}`)
+            .then(response => response.json())  
+            .then(data => {
+            console.log(data); 
+            setforums(data)
+            })
+            .catch(error => {
+            console.error('Error fetching data:', error);
+            });
         },[]);
         const follow = (id) => {
             fetch(`${apiUrl}/followuser/${id}`,{
@@ -51,12 +65,29 @@ function User(){
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({user:localStorage.getItem('user_id')})
+                body: JSON.stringify({user:localStorage.getItem('user_id'),receiver:id})
                 })
             .then(response => response.json())  
             .then(data => {
             console.log(data); 
-           
+            setuserdata(prev=>({...prev,followers:userdata.followers+1}))
+            })
+            .catch(error => {
+            console.error('Error fetching data:', error);
+            });
+        };
+         const unfollow = (id) => {
+            fetch(`${apiUrl}/unfollowuser/${id}`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({user:localStorage.getItem('user_id'),receiver:id})
+                })
+            .then(response => response.json())  
+            .then(data => {
+            console.log(data); 
+           setuserdata(prev=>({...prev,followers:userdata.followers-1}))
             })
             .catch(error => {
             console.error('Error fetching data:', error);
@@ -79,50 +110,95 @@ function User(){
             console.error('Error fetching data:', error);
             });
         }
-    return(
-        <>
-            <div className='page'>
-                <h1>{username} profile</h1>
-                <img src={image_path} width="100px" height="100px" style={{borderRadius:'50%'}}/>
-                <p>name:{username}</p>
-                <p>bio:{bio}</p>
-                <p>followers:{userdata.followers} following:{userdata.following} {userdata.date_joined}</p>
-                <button onClick={()=>follow({id})}>follow</button>
-                <button onClick={()=>start_chat()}>chat</button>
-                <h2>posts</h2>
-                <div className='container'>
-                    {userposts.map((post) => (
-                            <div key={post._id} className="post">
-                                <h3 onClick={()=>navigate(`/post/${post._id}`)}>{post.title}</h3>
-                                <p>{post.description}</p>
-                                {post.content && (
-                                    <div>
-                                        {post.content.includes(".mp4") ? (
-                                            <video width="320" height="240" controls>
-                                                <source
-                                                    src={
-                                                `${apiUrl}/files/${post.content}`
-                                                    }
-                                                    type="video/mp4"
-                                                />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        ) : (
-                                            <img width="320" height="240"
-                                                src={
-                                                `${apiUrl}/files/${post.content}`
-                                                }
-                                                alt="Post Media"
-                                            />
-                                        )}
-                                    </div>
-                                )}
+
+        const renderTabContent = () => {
+            switch (activeTab) {
+              case 'posts':
+                return (
+                  <div>
+                    <div className="post-grid">
+                        {userposts.map((post) => (
+                        <div className="post-card" key={post.id}>
+                            <h3 onClick={()=>navigate(`/post/${post._id}`)}>{post.title}</h3>
+                            <div className="media-preview">
+                            {post.type === 'image' && (
+                                <img src={ `${apiUrl}/files/${post.content}`} alt={post.title} style={{maxHeight:'240px',width:'auto'}}/>
+                            )}
+                            {post.type === 'video' && (
+                                <video controls style={{maxHeight:'240px',width:'auto'}}>
+                                <source src={ `${apiUrl}/files/${post.content}`} type="video/mp4" />
+                                </video>
+                            )}
+                            {post.type === 'audio' && (
+                                <audio controls>
+                                <source src={ `${apiUrl}/files/${post.content}`} type="audio/mpeg" />
+                                </audio>
+                            )}
+                            {post.type === 'none' && (
+                                <p className="text-media">{post.description.slice(0, 50)}</p>
+                            )}
+                            </div>
+                            <div className="like-count">🩵 {post.likes.length} likes </div>
+                        </div>
+                        ))}
+                    </div>
+                  </div>
+                );
+              case 'products':
+                return (
+                  <div>
+                    <div className="sample-content">
+                        {products.map((product) => (
+                            <div key={product._id} className="post">
+                                <h3>{product.name}</h3>
+                                <p>{product.description}</p>
+                                <img width="auto" height="240" src={`${apiUrl}/files/${product.picture}`}alt="Product picture"/>
+                                <p>price: ${product.price}  amount:{product.quantity}</p>
                             </div>
                         ))}
-                       
-                </div>
-            </div>
-        </>
+                    </div>
+                  </div>
+                );
+              case 'forums':
+                return (
+                  <div>
+                    <div className="sample-content">
+                        {forums.map((forum) => (<div key={forum._id} >
+                            <h2 onClick={()=>navigate(`/forum/${forum._id}`)}>{forum.name}</h2>
+                            <p>{forum.members.length} members</p>
+                        </div>))}
+                    </div>
+                  </div>
+                );
+              default:
+                return null;
+            }
+          };
+    return(
+     
+        <div className="profile-page">
+      <header className="profile-header">
+        <img className="avatar" src={image_path} alt="User Avatar" />
+        <div className="profile-info">
+          <h2>{username}</h2>
+          <p>{bio}</p>
+          <p>followers:{userdata.followers} following:{userdata.following} {userdata.date_joined}</p>
+          <button onClick={()=>follow({id})}>follow</button>
+          <button onClick={()=>unfollow({id})}>unfollow</button>
+          <button onClick={()=>start_chat()}>chat</button>
+        </div>
+      </header>
+
+      <div className="tabs">
+        <button className={activeTab === 'posts' ? 'active' : ''} onClick={() => setActiveTab('posts')}>Posts</button>
+        <button className={activeTab === 'products' ? 'active' : ''} onClick={() => setActiveTab('products')}>Products</button>
+        <button className={activeTab === 'forums' ? 'active' : ''} onClick={() => setActiveTab('forums')}>Forums</button>
+      </div>
+
+      <div className="tab-content">
+        {renderTabContent()}
+      </div>
+    </div>
     )
 }
 export default User;

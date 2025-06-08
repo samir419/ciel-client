@@ -46,34 +46,46 @@ function Product(){
         setrefresh(prev=>!prev)
     };
     return(
-        <div className='container'>
-            <div className="product">
-                <h3>{product.name}</h3>
-                <p>{product.description}</p>
-                <Link to={`/user/${product.seller._id}`}>{product.seller.name}</Link>
-                <img width="auto" height="240" src={`${apiUrl}/files/${product.picture}`}alt="Product picture"/>
-                <p>price: ${product.price} quantity:{product.quantity}</p>
-                <p>Comments: {product.comments.length}</p>
-                <ul>
-                    {product.comments.map((comment, index) => (
-                        <li key={index}>{comment.author.name}:{comment.content}</li>
-                    ))}
-                </ul>
-
-                <input
-                    type="text"
-                    placeholder="Add a comment"
-                    className="comment-input"
-                    onChange={(e) => setCommentInput(e.target.value)}
-                />
-                <button
-                    onClick={() => handleAddComment()}
-                    className="comment-button"
-                >
-                    Add Comment
-                </button>
-            </div>
-    </div>
+        <div className="post-container">
+             <div className="post-card">
+               <h2 className="post-title">{product.name}</h2>
+               <p className="post-description">{product.description}</p>
+               <p className="post-author">
+                 Posted by <Link to={`/user/${product.seller._id}`}>{product.seller.name}</Link>
+               </p>
+       
+               <div className='media-wrapper'>
+                     <img src={`${apiUrl}/files/${product.picture}`}alt="Product picture"/>
+               </div>
+       
+               <div className="post-actions">
+                  <p>price: ${product.price} quantity:{product.quantity}</p>
+               </div>
+       
+               <div className="comments-section">
+                 <h3>Comments ({product.comments.length})</h3>
+                 <ul className="comment-list">
+                   {product.comments.map((comment, i) => (
+                     <li key={i}><strong>{comment.author.name}:</strong> {comment.content}</li>
+                   ))}
+                 </ul>
+       
+                 <div className="comment-form">
+                        <input
+                        type="text"
+                        placeholder="Add a comment"
+                        onChange={(e) => setCommentInput(e.target.value)}
+                    />
+                    <button
+                        onClick={() => handleAddComment()}
+                        className="comment-button"
+                    >
+                        Add Comment
+                    </button>
+                 </div>
+               </div>
+             </div>
+           </div>
     )
 }
 export default Product;

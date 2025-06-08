@@ -1,128 +1,110 @@
-import React, { useState,useEffect  } from 'react';
-import { useNavigate,useParams,Link } from "react-router-dom";
-function Post(){
-    const apiUrl = import.meta.env.VITE_API_URL;
-     const {id} = useParams();
-     const [post, setpost] = useState({
-        title: "",
-        description: "",
-        type: "",
-        author: {},
-        content: "",
-        likes: [],
-        comments: []
-     });
-     const [commentInput, setCommentInput] = useState("");
-     const [refresh,setrefresh]= useState(false);
-    useEffect(() => {
-        console.log('sending request')
-        fetch(`${apiUrl}/post/${id}`)
-        .then(response => response.json())  
-        .then(data => {
-        console.log(data); 
-        setpost(data)
-        })
-        .catch(error => {
-        console.error('Error fetching data:', error);
-        });
-        console.log(post)
-    },[refresh]);
-    const handleLike = () => {
-        fetch(`${apiUrl}/like/${id}`,{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({user:localStorage.getItem('user_id')})
-            })
-        .then(response => response.json())  
-        .then(data => {
-        console.log(data); 
-        })
-        .catch(error => {
-        console.error('Error fetching data:', error);
-        });
-        setrefresh(prev=>!prev)
-    };
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 
-    const handleAddComment = () => {
-        fetch(`${apiUrl}/comment/${id}`,{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({user:localStorage.getItem('user_id'),message:commentInput})
-            })
-        .then(response => response.json())  
-        .then(data => {
-        console.log(data); 
-        })
-        .catch(error => {
-        console.error('Error fetching data:', error);
-        });
-        setrefresh(prev=>!prev)
-    };
-    return(
-        <div className='page'>
-            <div className="post">
-                <h3>{post.title}</h3>
-                <p>{post.description}</p>
-                <p>{post.type}</p>
-                <Link to={`/user/${post.author._id}`}>{post.author.name}</Link>
-                {post.content && (
-                    <div>
-                        {post.type == 'video' ? (
-                            <video style={{maxWidth:'1000px',height:'auto'}} controls>
-                                <source
-                                    src={
-                                `${apiUrl}/files/${post.content}`
-                                    }
-                                    type="video/mp4"
-                                />
-                                Your browser does not support the video tag.
-                            </video>
-                        ) : post.type == 'image' ? (
-                            <img style={{maxWidth:'1000px',height:'auto'}}
-                                src={
-                                `${apiUrl}/files/${post.content}`
-                                }
-                                alt="Post Media"
-                            />
-                        ): post.type == 'audio' ? (
-                            <audio controls
-                                src={
-                                `${apiUrl}/files/${post.content}`
-                                }
-                                alt="Post Media"
-                            />
-                        ):(
-                          <div></div>
-                        )}
-                    </div>
-                )}
-                <p>Likes: {post.likes.length}</p>
-                <button onClick={() => handleLike()}>Like</button>
-                <p>Comments: {post.comments.length}</p>
-                <ul>
-                    {post.comments.map((comment, index) => (
-                        <li key={index}>{comment.author.name}:{comment.content}</li>
-                    ))}
-                </ul>
+function Post() {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const { id } = useParams();
+  const [post, setPost] = useState({
+    title: "",
+    description: "",
+    type: "",
+    author: {},
+    content: "",
+    likes: [],
+    comments: []
+  });
+  const [commentInput, setCommentInput] = useState("");
+  const [refresh, setRefresh] = useState(false);
 
-                <input
-                    type="text"
-                    placeholder="Add a comment"
-                    className="comment-input"
-                    onChange={(e) => setCommentInput(e.target.value)}
-                />
-                <button
-                    onClick={() => handleAddComment()}
-                    className="comment-button"
-                >
-                    Add Comment
-                </button>
-            </div>
+  useEffect(() => {
+    fetch(`${apiUrl}/post/${id}`)
+      .then(response => response.json())
+      .then(data => {
+        setPost(data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, [refresh]);
+
+  const handleLike = () => {
+    fetch(`${apiUrl}/like/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: localStorage.getItem('user_id') })
+    })
+      .then(response => response.json())
+      .then(() => setRefresh(prev => !prev))
+      .catch(console.error);
+  };
+
+  const handleAddComment = () => {
+    fetch(`${apiUrl}/comment/${id}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user: localStorage.getItem('user_id'), message: commentInput })
+    })
+      .then(response => response.json())
+      .then(() => {
+        setCommentInput('');
+        setRefresh(prev => !prev);
+      })
+      .catch(console.error);
+  };
+
+  return (
+    <div className="post-container">
+      <div className="post-card">
+        <h2 className="post-title">{post.title}</h2>
+        <p className="post-description">{post.description}</p>
+        <p className="post-type">{post.type.toUpperCase()}</p>
+        <p className="post-author">
+          Posted by <Link to={`/user/${post.author._id}`}>{post.author.name}</Link>
+        </p>
+
+        {post.content && (
+          <div className="media-wrapper">
+            {post.type === 'video' && (
+              <video controls>
+                <source src={`${apiUrl}/files/${post.content}`} type="video/mp4" />
+              </video>
+            )}
+            {post.type === 'image' && (
+              <img src={`${apiUrl}/files/${post.content}`} alt="Post Media" />
+            )}
+            {post.type === 'audio' && (
+              <audio controls>
+                <source src={`${apiUrl}/files/${post.content}`} />
+              </audio>
+            )}
+          </div>
+        )}
+
+        <div className="post-actions">
+          <button onClick={handleLike}>🩵 Like ({post.likes.length})</button>
+        </div>
+
+        <div className="comments-section">
+          <h3>Comments ({post.comments.length})</h3>
+          <ul className="comment-list">
+            {post.comments.map((comment, i) => (
+              <li key={i}><strong>{comment.author.name}:</strong> {comment.content}</li>
+            ))}
+          </ul>
+
+          <div className="comment-form">
+            <input
+              type="text"
+              placeholder="Add a comment..."
+              value={commentInput}
+              onChange={(e) => setCommentInput(e.target.value)}
+            />
+            <button onClick={handleAddComment}>Post</button>
+          </div>
+        </div>
+      </div>
     </div>
-    )
+  );
 }
+
 export default Post;

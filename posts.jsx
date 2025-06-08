@@ -1,5 +1,6 @@
 import React, { useState,useEffect  } from 'react';
 import { Outlet, Link } from "react-router-dom";
+import './new.css';
 function Ciel_posts(){
     const apiUrl = import.meta.env.VITE_API_URL;
      const [posts, setposts] = useState([]);
@@ -36,47 +37,37 @@ function Ciel_posts(){
         });
     }
     return(
-        <div className='container'>
-            <input type="search" onSubmit={search()} onChange={(e)=>setsearchquery(e.target.value)} style={{display:'none'}}/>
-            {posts.map((post) => (
-                <div key={post._id} className="post">
-                    <h3><Link to={`/post/${post._id}`} style={{color:'white'}}>{post.title}</Link></h3>
-                    <p>type:{post.type}</p>
-                    {post.content && (
-                        <div>
-                            {post.type == 'video' ? (
-                                <video width="auto" height="240" controls>
-                                    <source
-                                        src={
-                                    `${apiUrl}/files/${post.content}`
-                                        }
-                                        type="video/mp4"
-                                    />
-                                    Your browser does not support the video tag.
-                                </video>
-                            ) : post.type == 'image' ? (
-                                <img width="auto" height="240"
-                                    src={
-                                    `${apiUrl}/files/${post.content}`
-                                    }
-                                    alt="Post Media"
-                                />
-                            ): post.type == 'audio' ? (
-                                <audio controls
-                                    src={
-                                    `${apiUrl}/files/${post.content}`
-                                    }
-                                    alt="Post Media"
-                                />
-                            ):(
-                              <div></div>
-                            )}
-                        </div>
-                    )}
-                    <p>Likes: {post.likes.length}</p>
-                </div>
-            ))}
-        </div>
+        <div className="social-home">
+      <h1 className="header">Social Stream</h1>
+      <div className="post-grid">
+        {posts.map((post) => (
+          <div className="post-card" key={post.id}>
+            <h2 className="post-title"><Link to={`/post/${post._id}`} style={{color:'white',width:'auto'}}>{post.title}</Link></h2>
+            <div className="media-container">
+              {post.type === 'image' && (
+                <img src={`${apiUrl}/files/${post.content}`} alt={post.title} style={{maxHeight:'240px'}}/>
+              )}
+              {post.type === 'video' && (
+                <video controls style={{maxHeight:'200px',width:'auto'}}>
+                  <source src= {`${apiUrl}/files/${post.content}`} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+              {post.type === 'audio' && (
+                <audio controls>
+                  <source src={ `${apiUrl}/files/${post.content}`} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              )}
+              {post.type === 'none' && (
+                <p className="text-post">{post.description.slice(0, 50)}</p>
+              )}
+            </div>
+            <div className="like-count">🩵 {post.likes.length} likes</div>
+          </div>
+        ))}
+      </div>
+    </div>
     )
 }
 export default Ciel_posts;
