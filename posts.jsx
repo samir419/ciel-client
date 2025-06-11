@@ -45,7 +45,7 @@ function Ciel_posts(){
             <h2 className="post-title"><Link to={`/post/${post._id}`} style={{color:'white',width:'auto'}}>{post.title}</Link></h2>
             <div className="media-container">
               {post.type === 'image' && (
-                <img src={`${apiUrl}/files/${post.content}`} alt={post.title} style={{maxHeight:'240px'}}/>
+                <img src={`${apiUrl}/files/${post.content}`} alt={post.title} style={{maxHeight:'240px',width:'auto'}}/>
               )}
               {post.type === 'video' && (
                 <video controls style={{maxHeight:'200px',width:'auto'}}>

@@ -65,12 +65,12 @@ function Post() {
         {post.content && (
           <div className="media-wrapper">
             {post.type === 'video' && (
-              <video controls>
+              <video controls style={{maxHeight:'400px',width:'auto'}}>
                 <source src={`${apiUrl}/files/${post.content}`} type="video/mp4" />
               </video>
             )}
             {post.type === 'image' && (
-              <img src={`${apiUrl}/files/${post.content}`} alt="Post Media" />
+              <img src={`${apiUrl}/files/${post.content}`} alt="Post Media" style={{maxHeight:'400px',width:'auto'}}/>
             )}
             {post.type === 'audio' && (
               <audio controls>
