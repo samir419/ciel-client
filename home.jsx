@@ -6,9 +6,9 @@ function Chome(){
     const id = localStorage.getItem('user_id');
     return(
         <div className='page'>
-            <h1>ciel home page</h1>
             <Ciel_posts/>
         </div>
     )
 }
+
 export default Chome;
